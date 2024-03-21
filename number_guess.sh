@@ -29,8 +29,17 @@ START_GAME() {
   # Generate secrete random number
   RANDOM_NUMBER=$(( RANDOM % 1001 ))
 
+  GUESS_NUMBER $RANDOM_NUMBER $USERNAME $USERNAME_ENTERED
+
+}
+
+GUESS_NUMBER() {
 
   # Request guess from user
+  echo "Guess the secret number between 1 and 1000:"
+  read GUESSED_NUMBER
+
+  echo $GUESSED_NUMBER
   # If guess > target, display msg 1 and loop
   # If guess < target, display msg 2 and loop
   # If guess = target, display msg 3 and update DB
