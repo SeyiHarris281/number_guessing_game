@@ -6,12 +6,30 @@ START_GAME() {
 
   echo "Enter your username:"
 
-  read USER_NAME_ENTERED
+  read USERNAME_ENTERED
 
   # Retrieve user_name from DB
-  # If in DB, display msg1
-  # else display msg2
+  USERNAME=$($PSQL "SELECT username FROM users WHERE username = '$USERNAME_ENTERED'")
+
+  if [[ -z $USERNAME ]]
+  then
+    
+    # else display msg2
+    echo "Welcome, $USERNAME_ENTERED! It looks like this is your first time here."
+
+  else
+    
+    # If username in DB, display msg1
+    GAMES_PLAYED=$($PSQL "SELECT games_played FROM users WHERE username = '$USERNAME'")
+    BEST_GAME_TRIES=$($PSQL "SELECT best_game_tries FROM users WHERE username = '$USERNAME'")
+    echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME_TRIES guesses."
+
+  fi
+
   # Generate secrete random number
+  RANDOM_NUMBER=$(( RANDOM % 1001 ))
+
+
   # Request guess from user
   # If guess > target, display msg 1 and loop
   # If guess < target, display msg 2 and loop
