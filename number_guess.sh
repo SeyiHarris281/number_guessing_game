@@ -27,7 +27,7 @@ START_GAME() {
   fi
 
   # Generate secrete random number
-  RANDOM_NUMBER=$(( RANDOM % 1001 ))
+  RANDOM_NUMBER=$(( RANDOM % 999 + 1 ))
 
   NUMBER_OF_GUESSES=0
 
@@ -53,8 +53,6 @@ GUESS_NUMBER() {
     GUESSED_NUMBER=$5
 
   fi
-
-  # echo $GUESSED_NUMBER
 
   if [[ $GUESSED_NUMBER =~ ^[[:digit:]]+$ ]]
   then
