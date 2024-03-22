@@ -70,12 +70,23 @@ GUESS_NUMBER() {
       GUESS_NUMBER $1 $2 $3 $(( $4 + 1 )) $NEW_GUESS
 
     else
+      
+      if [[ "$3" == "false" ]]
+      then
+
+        # Record result for new user
+        RECORD_GAME_RESULT=$($PSQL "INSERT INTO users (username, games_played, best_game_tries) VALUES ('$2', 1, $(( $4 + 1 )))")
+
+      else
+
+        # Record result for existing user
+        GAMES_PLAYED=$($PSQL "SELECT games_played FROM users WHERE username = '$2'")
+        BEST_GAME_TRIES=$($PSQL "SELECT best_game_tries FROM users WHERE username = '$2'")
+        RECORD_GAME_RESULT=$($PSQL "UPDATE users SET games_played = $(( $GAMES_PLAYED + 1 )), best_game_tries = $(( $BEST_GAME_TRIES < $(( $4 + 1 )) ? $BEST_GAME_TRIES : $(( $4 + 1 )) )) WHERE username = '$2'")
+
+      fi
 
       echo "You guessed it in $(( $4 + 1 )) tries. The secret number was $1. Nice job!"
-      echo $1
-      echo $2
-      echo $3
-      echo $4
 
     fi
 
