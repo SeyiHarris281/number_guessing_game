@@ -10,12 +10,14 @@ START_GAME() {
 
   # Retrieve user_name from DB
   USERNAME=$($PSQL "SELECT username FROM users WHERE username = '$USERNAME_ENTERED'")
+  EXISTING_USER="false"
 
   if [[ -z $USERNAME ]]
   then
     
     # else display msg2
     echo "Welcome, $USERNAME_ENTERED! It looks like this is your first time here."
+    USERNAME=$USERNAME_ENTERED
 
   else
     
@@ -23,6 +25,7 @@ START_GAME() {
     GAMES_PLAYED=$($PSQL "SELECT games_played FROM users WHERE username = '$USERNAME'")
     BEST_GAME_TRIES=$($PSQL "SELECT best_game_tries FROM users WHERE username = '$USERNAME'")
     echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME_TRIES guesses."
+    EXISTING_USER="true"
 
   fi
 
@@ -31,7 +34,7 @@ START_GAME() {
 
   NUMBER_OF_GUESSES=0
 
-  GUESS_NUMBER $RANDOM_NUMBER $USERNAME $USERNAME_ENTERED $NUMBER_OF_GUESSES
+  GUESS_NUMBER $RANDOM_NUMBER $USERNAME $EXISTING_USER $NUMBER_OF_GUESSES
 
 }
 
@@ -74,6 +77,10 @@ GUESS_NUMBER() {
     else
 
       echo "You guessed it in $(( $4 + 1 )) tries. The secret number was $1. Nice job!"
+      echo $1
+      echo $2
+      echo $3
+      echo $4
 
     fi
 
