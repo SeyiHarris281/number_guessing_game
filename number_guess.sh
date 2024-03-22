@@ -40,20 +40,15 @@ START_GAME() {
 
 GUESS_NUMBER() {
 
-  GUESSED_NUMBER=""
+  GUESSED_NUMBER=$5
 
-  if [[ -z $5 ]]
+  if [[ -z $GUESSED_NUMBER ]]
   then
 
     # Request first guess from user
     echo "Guess the secret number between 1 and 1000:"
     read NEW_GUESS
     GUESSED_NUMBER=$NEW_GUESS
-
-  else
-
-    # Use current guess
-    GUESSED_NUMBER=$5
 
   fi
 
