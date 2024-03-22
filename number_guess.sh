@@ -29,21 +29,61 @@ START_GAME() {
   # Generate secrete random number
   RANDOM_NUMBER=$(( RANDOM % 1001 ))
 
-  GUESS_NUMBER $RANDOM_NUMBER $USERNAME $USERNAME_ENTERED
+  NUMBER_OF_GUESSES=0
+
+  GUESS_NUMBER $RANDOM_NUMBER $USERNAME $USERNAME_ENTERED $NUMBER_OF_GUESSES
 
 }
 
 GUESS_NUMBER() {
 
-  # Request guess from user
-  echo "Guess the secret number between 1 and 1000:"
-  read GUESSED_NUMBER
+  GUESSED_NUMBER=""
 
-  echo $GUESSED_NUMBER
-  # If guess > target, display msg 1 and loop
-  # If guess < target, display msg 2 and loop
-  # If guess = target, display msg 3 and update DB
-  # end game
+  if [[ -z $5 ]]
+  then
+
+    # Request first guess from user
+    echo "Guess the secret number between 1 and 1000:"
+    read NEW_GUESS
+    GUESSED_NUMBER=$NEW_GUESS
+
+  else
+
+    # Use current guess
+    GUESSED_NUMBER=$5
+
+  fi
+
+  # echo $GUESSED_NUMBER
+
+  if [[ $GUESSED_NUMBER =~ ^[[:digit:]]+$ ]]
+  then
+
+    if [[ $GUESSED_NUMBER -gt $1 ]]
+    then
+
+      echo "It's lower than that, guess again:"
+      read NEW_GUESS
+      GUESS_NUMBER $1 $2 $3 $(( $4 + 1 )) $NEW_GUESS
+
+    elif [[ $GUESSED_NUMBER -lt $1 ]]
+    then
+
+      echo "It's higher than that, guess again:"
+      read NEW_GUESS
+      GUESS_NUMBER $1 $2 $3 $(( $4 + 1 )) $NEW_GUESS
+
+    else
+
+      echo "You guessed it in $(( $4 + 1 )) tries. The secret number was $1. Nice job!"
+
+    fi
+
+  else
+    echo "That is not an integer, guess again:"
+    read NEW_GUESS
+    GUESS_NUMBER $1 $2 $3 $4 $NEW_GUESS
+  fi
 
 }
 
